@@ -1,6 +1,7 @@
 # used for manipulating directory paths
 import os
 
+from matplotlib import pyplot
 # Scientific and vector computation for python
 import numpy as np
 # will be used to load MATLAB mat datafile format
@@ -136,7 +137,27 @@ def lrCostFunction(theta, X, y, lambda_):
     J = 0
     grad = np.zeros(theta.shape)
 
+    h = utils.sigmoid(np.dot(X, theta.T))
+
+    temp = theta
+    temp[0] = 0
+
     # ====================== YOUR CODE HERE ======================
+    J = (1 / m) * np.sum((np.dot(-y, np.log(h))) - (np.dot((1 - y), (np.log(1 - h))))) + (lambda_ / (2 * m)) * np.sum(np.square(temp))
+    grad[0] = (1 / m) * np.dot((h - y), X[:, 0])
+    grad[1:] = (1 / m) * np.dot((h - y), X[:, 1:]) + (lambda_ / m) * theta[1:]
+
 
     # =============================================================
     return J, grad
+
+
+J, grad = lrCostFunction(theta_t, X_t, y_t, lambda_t)
+
+print('Cost         : {:.6f}'.format(J))
+print('Expected cost: 2.534819')
+print('-----------------------')
+print('Gradients:')
+print(' [{:.6f}, {:.6f}, {:.6f}, {:.6f}]'.format(*grad))
+print('Expected gradients:')
+print(' [0.146561, -0.548558, 0.724722, 1.398003]');
