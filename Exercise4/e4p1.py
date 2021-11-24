@@ -1,3 +1,4 @@
+# used for manipulating directory paths
 import os
 
 # Scientific and vector computation for python
@@ -15,6 +16,8 @@ from scipy.io import loadmat
 # library written for this exercise providing additional functions for assignment submission, and others
 import utils
 
+
+#----------------------------------------------------------------------------------------------------
 #  training data stored in arrays X, y
 data = loadmat(os.path.join('Data', 'ex4data1.mat'))
 X, y = data['X'], data['y'].ravel()
@@ -26,11 +29,11 @@ y[y == 10] = 0
 
 # Number of training examples
 m = y.size
-
+#----------------------------------------------------------------------------------------------------
 # Setup the parameters you will use for this exercise
-input_layer_size = 400  # 20x20 Input Images of Digits
-hidden_layer_size = 25  # 25 hidden units
-num_labels = 10  # 10 labels, from 0 to 9
+input_layer_size  = 400  # 20x20 Input Images of Digits
+hidden_layer_size = 25   # 25 hidden units
+num_labels = 10          # 10 labels, from 0 to 9
 
 # Load the weights into variables Theta1 and Theta2
 weights = loadmat(os.path.join('Data', 'ex4weights.mat'))
@@ -45,8 +48,7 @@ Theta2 = np.roll(Theta2, 1, axis=0)
 
 # Unroll parameters
 nn_params = np.concatenate([Theta1.ravel(), Theta2.ravel()])
-
-
+#----------------------------------------------------------------------------------------------------
 def sigmoidGradient(z):
     """
     Computes the gradient of the sigmoid function evaluated at z.
@@ -76,6 +78,7 @@ def sigmoidGradient(z):
     """
 
     g = np.zeros(z.shape)
+#----------------------------------------------------------------------------------------------------
 
     # ====================== YOUR CODE HERE ======================
     g = utils.sigmoid(z) * (1 - utils.sigmoid(z))
@@ -222,8 +225,6 @@ def nnCostFunction(nn_params,
 
     Theta1_grad = (D1/m)
     Theta2_grad = (D2/m)
-
-
 
 
     grad = np.concatenate([Theta1_grad.ravel(), Theta2_grad.ravel()])

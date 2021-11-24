@@ -156,13 +156,12 @@ def lrCostFunction(theta, X, y, lambda_):
 
 J, grad = lrCostFunction(theta_t, X_t, y_t, lambda_t)
 
-# print('Cost         : {:.6f}'.format(J))
-# print('Expected cost: 2.534819')
-# print('-----------------------')
-# print('Gradients:')
-# print(' [{:.6f}, {:.6f}, {:.6f}, {:.6f}]'.format(*grad))
-# print('Expected gradients:')
-# print(' [0.146561, -0.548558, 0.724722, 1.398003]');
+print('Cost         : {:.6f}'.format(J))
+print('Expected cost: 2.534819')
+print('Gradients:')
+print(' [{:.6f}, {:.6f}, {:.6f}, {:.6f}]'.format(*grad))
+print('Expected gradients:')
+print(' [0.146561, -0.548558, 0.724722, 1.398003]');
 
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -324,6 +323,10 @@ def predictOneVsAll(all_theta, X):
     p = np.argmax(h,axis=1)
     # ============================================================
     return p
+
+pred = predictOneVsAll(all_theta, X)
+print('Training Set Accuracy: {:.2f}%'.format(np.mean(pred == y) * 100))
+
 
 #  training data stored in arrays X, y
 data = loadmat(os.path.join('Data', 'ex3data1.mat'))
