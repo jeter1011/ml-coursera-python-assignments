@@ -28,6 +28,10 @@ def hypothesis(theta, X):
 
 
 def computeCost(X, y, theta):
+    """
+
+    :type theta: object
+    """
     # initialize some useful values
     m = y.size  # number of training examples
 
@@ -111,6 +115,6 @@ theta = np.zeros(2)
 iterations = 1500
 alpha = 0.01
 
-theta, J_history, theta1 = gradientDescent(X, y, theta, alpha, iterations)
+theta, J_history = gradientDescent(X, y, theta, alpha, iterations)
 print('Theta found by gradient descent: {:.4f}, {:.4f}'.format(*theta))
 print('Expected theta values (approximately): [-3.6303, 1.1664]')
