@@ -49,7 +49,42 @@ Theta2 = np.roll(Theta2, 1, axis=0)
 # Unroll parameters
 nn_params = np.concatenate([Theta1.ravel(), Theta2.ravel()])
 #----------------------------------------------------------------------------------------------------
+def sigmoidGradient(z):
+    """
+    Computes the gradient of the sigmoid function evaluated at z.
+    This should work regardless if z is a matrix or a vector.
+    In particular, if z is a vector or matrix, you should return
+    the gradient for each element.
 
+    Parameters
+    ----------
+    z : array_like
+        A vector or matrix as input to the sigmoid function.
+
+    Returns
+    --------
+    g : array_like
+        Gradient of the sigmoid function. Has the same shape as z.
+
+    Instructions
+    ------------
+    Compute the gradient of the sigmoid function evaluated at
+    each value of z (z can be a matrix, vector or scalar).
+
+    Note
+    ----
+    We have provided an implementation of the sigmoid function
+    in `utils.py` file accompanying this assignment.
+    """
+
+    g = np.zeros(z.shape)
+#----------------------------------------------------------------------------------------------------
+
+    # ====================== YOUR CODE HERE ======================
+    g = utils.sigmoid(z) * (1 - utils.sigmoid(z))
+
+    # =============================================================
+    return g
 
 def nnCostFunction(nn_params,
                    input_layer_size,
@@ -91,7 +126,7 @@ def nnCostFunction(nn_params,
         The computed value for the cost function at the current weight values.
 
     grad : array_like
-        An "unrolled" vector of the partial derivatives of the concatenation of
+        An "unrolled" vector of the partial derivatives of the concatenatation of
         neural network weights Theta1 and Theta2.
 
     Instructions
@@ -142,43 +177,71 @@ def nnCostFunction(nn_params,
     # Setup some useful variables
     m = y.size
 
+    lam = lambda_
+
     # You need to return the following variables correctly
     J = 0
     Theta1_grad = np.zeros(Theta1.shape)
     Theta2_grad = np.zeros(Theta2.shape)
 
-
-    temp1, temp2 = Theta1, Theta2
-
     # ====================== YOUR CODE HERE ======================
     a1 = np.concatenate([np.ones((m, 1)), X], axis=1)
 
-    a2 = utils.sigmoid(a1.dot(Theta1.T))
+    a2 = utils.sigmoid(np.dot(a1, Theta1.T))
     a2 = np.concatenate([np.ones((a2.shape[0], 1)), a2], axis=1)
 
-    a3 = utils.sigmoid(a2.dot(Theta2.T))
+    a3 = utils.sigmoid(np.dot(a2, Theta2.T))
 
-    y_matrix = y.reshape(-1)
-    y_matrix = np.eye(num_labels)[y_matrix]
+    # use reshape to clean up "y"matrix if need be and eye[label] to index the eye per row
+    y1 = np.array(y.reshape(-1))
+    y1 = np.eye(num_labels)[y1]
+
+    y_matrix = np.array(y[:,np.newaxis])
 
 
+    theta1 = Theta1
+    theta2 = Theta2
+    # cost = 0
+    h_x = a3
 
-    J = (-1 / m) * np.sum(   (np.log(a3) * y_matrix) + np.log(1 - a3) * (1 - y_matrix)    )
+    temp1 = np.array(theta1)
+    temp2 = np.array(theta2)
+    temp1[:, 0] = 0
+    temp2[:, 0] = 0
 
-
-    Theta1_grad[:, 1:] = Theta1_grad[:, 1:] + (lambda_ / m) * Theta1[:, 1:]
-    Theta2_grad[:, 1:] = Theta2_grad[:, 1:] + (lambda_ / m) * Theta2[:, 1:]
-
+    J = (-1 / m) * np.sum((y1 * np.log(h_x)) + ((1 - y1) * np.log(1 - h_x))) + (lam/(2*m))*(np.sum(np.square(temp1)) + np.sum(np.square(temp2)))
 
     # ================================================================
     # Unroll gradients
     # grad = np.concatenate([Theta1_grad.ravel(order=order), Theta2_grad.ravel(order=order)])
+
+    d3 = a3 - y_matrix
+    z2 = np.dot(a1, Theta1.T)
+    sig_grad_z2 = sigmoidGradient(z2)
+    d2 = np.multiply(np.dot(d3,theta2[:, 1:]),sig_grad_z2)
+
+    D1 = np.dot(d2.T, a1)
+    D2 = np.dot(d3.T, a2)
+
+    Theta1_grad = (D1/m)
+    Theta2_grad = (D2/m)
+
+
     grad = np.concatenate([Theta1_grad.ravel(), Theta2_grad.ravel()])
 
     return J, grad
 
-lambda_ = 0
+
+# lambda_ = 0
+# J, _ = nnCostFunction(nn_params, input_layer_size, hidden_layer_size,
+#                       num_labels, X, y, lambda_)
+# print('Cost at parameters (loaded from ex4weights): %.6f ' % J)
+# print('The cost should be about                   : 0.287629.')
+
+
+lambda_ = 1
 J, _ = nnCostFunction(nn_params, input_layer_size, hidden_layer_size,
-                   num_labels, X, y, lambda_)
-print('Cost at parameters (loaded from ex4weights): %.6f ' % J)
-print('The cost should be about                   : 0.287629.')
+                      num_labels, X, y, lambda_)
+
+print('Cost at parameters (loaded from ex4weights): %.6f' % J)
+print('This value should be about                 : 0.383770.')
