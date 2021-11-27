@@ -196,9 +196,6 @@ def nnCostFunction(nn_params,
     y1 = np.array(y.reshape(-1))
     y1 = np.eye(num_labels)[y1]
 
-    y_matrix = np.array(y[:,np.newaxis])
-
-
     theta1 = Theta1
     theta2 = Theta2
     # cost = 0
@@ -215,7 +212,7 @@ def nnCostFunction(nn_params,
     # Unroll gradients
     # grad = np.concatenate([Theta1_grad.ravel(order=order), Theta2_grad.ravel(order=order)])
 
-    d3 = a3 - y_matrix
+    d3 = a3 - y1
     z2 = np.dot(a1, Theta1.T)
     sig_grad_z2 = sigmoidGradient(z2)
     d2 = np.multiply(np.dot(d3,theta2[:, 1:]),sig_grad_z2)
@@ -245,3 +242,5 @@ J, _ = nnCostFunction(nn_params, input_layer_size, hidden_layer_size,
 
 print('Cost at parameters (loaded from ex4weights): %.6f' % J)
 print('This value should be about                 : 0.383770.')
+
+utils.checkNNGradients(nnCostFunction)
