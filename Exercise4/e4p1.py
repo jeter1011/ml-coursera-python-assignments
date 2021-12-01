@@ -1,3 +1,4 @@
+#bitch
 # used for manipulating directory paths
 import os
 
