@@ -230,4 +230,14 @@ error_train, error_val = learningCurve(X_aug, y, Xval_aug, yval, lambda_=0)
 # print('# Training Examples\tTrain Error\tCross Validation Error')
 # for i in range(m):
 #     print('  \t%d\t\t%f\t%f' % (i + 1, error_train[i], error_val[i]))
+p = 8
 
+X_poly = np.zeros((X.shape[0], p))
+
+X_p = np.transpose(X_poly)
+
+for i in range(1, p + 1):
+    X_temp = np.reshape(np.array(X**i), (-1, 1))
+    X_p[i - 1] = np.transpose(X_temp)
+
+X_poly = np.transpose(X_p)
